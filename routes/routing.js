@@ -2,12 +2,12 @@ var Note = require('../models/Note.js')
 var Article = require('../models/Article.js')
 var request = require("request")
 var cheerio = require("cheerio")
-var articles = []
 
 
 module.exports = function(app, db){
 
     app.get('/scrape',function(req, res){
+        var articles = []
         request("https://arstechnica.com/", function(error, response, html){
             var $ = cheerio.load(html)
 
@@ -22,6 +22,17 @@ module.exports = function(app, db){
             res.json(articles)
         })
 
+    })
+
+    app.get('/saved', function(req, res){
+        Article.find({}, function(err, data){
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json(data)
+            }
+        })
     })
 
     app.post('/save', function(req,res){

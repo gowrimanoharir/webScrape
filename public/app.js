@@ -11,13 +11,24 @@ $("#articles").on("click", "#save-article", function(){
         link: article.find("a").attr("href"),
         excerpt: article.find("h4").text()
     }
+    $(this).attr("hidden", true)
+    $.post("/save", saveData)
+        .done(function(err, data){
+            console.log(data)
+        })
+})
 
-    $(this).attr("disabled", true)
-
-    $.post("/save", saveData, function(data){
-        console.log(data)
-
+$("#saved").on("click", function(){
+    $.getJSON("/saved", function(data){
+        $("#articles").attr("hidden",true)
+        $("#saved-articles").attr("hidden",false)
+        displaySavedArticles(data);
     })
+})
+
+$("#home").on("click", function(){
+    $("#saved-articles").attr("hidden",true)
+    $("#articles").attr("hidden",false)
 })
 
 function displayArticles(data){
@@ -41,4 +52,26 @@ function displayArticles(data){
         newArticle.append(h2).append(h4).append(button)
         articles.append(newArticle)
     });
+}
+
+function displaySavedArticles(data){
+    console.log(data)
+    var saved = $("#saved-articles")
+    saved.empty()
+    data.map(function(item, i) {
+        var newArticle=$("<article>")
+        var h2=$("<h2>")
+        var h4 =$("<h4>")
+        var a=$("<a>")
+        var button = $("<button>")
+        a.text(item.title)
+        a.attr("href", item.link)
+        h2.append(a)
+        h4.text(item.excerpt)
+        button.text("Delete Article")
+        button.attr("id", "delete-article")
+        button.attr("data-id", item._id)
+        newArticle.append(h2).append(h4).append(button)
+        saved.append(newArticle)
+    });    
 }
