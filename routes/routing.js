@@ -6,26 +6,48 @@ var cheerio = require("cheerio")
 
 module.exports = function(app, db){
 
-    app.get('/scrape',function(req, res){
-        var articles = []
+    app.post('/scrape',function(req, res){
+        var articles = 0;
+        //Article.find({saved: false}).remove().exec()
         request("https://arstechnica.com/", function(error, response, html){
             var $ = cheerio.load(html)
-
+            var elements = $("article header").nextAll()
+            var counter = elements.length
             $("article header").each(function(i, element){
                 var item = {}
 
                 item.title = $(element).find("h2 a").text()
                 item.link = $(element).find("h2 a").attr("href")
                 item.excerpt = $(element).find(".excerpt").text()
-                articles.push(item)
+                var newArticle = new Article(item)
+                newArticle.save(function(err, data){
+                    if(err){
+                        //console.log(err)
+                        counter--
+                    }
+                    else{
+                        articles++
+                    }
+                    if(articles===counter){
+                        console.log("article", articles)
+                        if(articles>0){
+                            res.redirect('/articles')
+                        }
+                        else{
+                            console.log("no new article")
+                            res.json({})
+                        }
+                        
+                    }    
+                })
             })
-            res.json(articles)
-        })
 
+        })
     })
 
-    app.get('/saved', function(req, res){
-        Article.find({}, function(err, data){
+    app.get('/articles', function(req, res){
+
+        Article.find({saved: false}, function(err, data){
             if(err){
                 console.log(err)
             }
@@ -35,10 +57,19 @@ module.exports = function(app, db){
         })
     })
 
-    app.post('/save', function(req,res){
-        var newArticle = new Article(req.body)
+    app.get('/saved', function(req, res){
+        Article.find({saved: true}, function(err, data){
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json(data)
+            }
+        })
+    })
 
-        newArticle.save(function(err, data){
+    app.post('/save/:id', function(req,res){
+        Article.update({"_id":req.params.id}, {$set: {"saved": true}}, function(err, data){
             if(err){
                 console.log(err)
             }
