@@ -7,12 +7,14 @@ var cheerio = require("cheerio")
 module.exports = function(app, db){
 
     app.post('/scrape',function(req, res){
-        var articles = 0;
+        console.log("in scrape")
+        var articles = 0, counter = 0;
         //Article.find({saved: false}).remove().exec()
         request("https://arstechnica.com/", function(error, response, html){
             var $ = cheerio.load(html)
             var elements = $("article header").nextAll()
             var counter = elements.length
+            console.log("cheerio"+counter)
             $("article header").each(function(i, element){
                 var item = {}
 
@@ -28,20 +30,18 @@ module.exports = function(app, db){
                     else{
                         articles++
                     }
-                    if(articles===counter){
+                    if(articles===counter-1){
                         console.log("article", articles)
                         if(articles>0){
-                            res.redirect('/articles')
+                            res.send(articles + "articles added")
                         }
                         else{
-                            console.log("no new article")
-                            res.json({})
+                            res.send("no new article")
                         }
                         
                     }    
                 })
             })
-
         })
     })
 
@@ -74,9 +74,22 @@ module.exports = function(app, db){
                 console.log(err)
             }
             else{
-                console.log(data)
+                res.redirect("/articles")
             }
         })
+    })
+
+    app.post('/delete/:id', function(req,res){
+        Article.find({"_id":req.params.id}).remove(function(err, data){
+            if(err){
+                console.log(err)
+            }
+            else {
+                res.redirect("/saved")
+            }
+            
+        })
+        
     })
 
 }

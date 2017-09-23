@@ -11,23 +11,31 @@ function showandhide(div1, div2){
 }
 
 $("#scrape").on("click", function(){
-    $.post("/scrape", function(data){
-            if(data.length>0){
-                displayArticles(data);
-            }
-            else{
-                console.log("no new article")
-            }
-            
+    console.log("in scrape")
+    $.post("/scrape")
+    .done(function(data){
+        console.log("in scrape",data)
+        alert(data)
+        $.getJSON("/articles", function(data){
+            displayArticles(data)
         })
+    })
 })
 
 $("#articles").on("click", "#save-article", function(){
     var id = $(this).attr("data-id")
-    $(this).attr("hidden", true)
     $.post("/save/"+id)
-        .done(function(err, data){
-            console.log(data)
+    .done(function(data){
+        displayArticles(data);
+    })
+})
+
+$("#saved-articles").on("click", "#delete-article", function(){
+    var id = $(this).attr("data-id")
+    console.log(id, "delete")
+    $.post("/delete/"+id)
+        .done(function(data){
+            displaySavedArticles(data);
         })
 })
 
@@ -47,7 +55,7 @@ $("#home").on("click", function(){
 function displayArticles(data){
     console.log(data)
     var articles = $("#articles")
-    articles.empty()
+    articles.html('')
     data.map(function(item, i) {
         if(!item.saved){
             var newArticle=$("<article>")
@@ -70,9 +78,9 @@ function displayArticles(data){
 }
 
 function displaySavedArticles(data){
-    console.log(data)
+    console.log("in saved art"+data)
     var saved = $("#saved-articles")
-    saved.empty()
+    saved.html('')
     data.map(function(item, i) {
         if(item.saved){
             var newArticle=$("<article>")
