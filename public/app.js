@@ -1,6 +1,11 @@
+var articles = $("#articles")
+var saved = $("#saved-articles")
+
 $(document).ready(function(){
     $.getJSON("/articles", function(data){
-        displayArticles(data)
+        showandhide(articles, saved)
+        articles.html('')
+        displayArticles(data);
     })
 })
 
@@ -15,10 +20,12 @@ $("#scrape").on("click", function(){
     $.post("/scrape")
     .done(function(data){
         console.log("in scrape",data)
-        alert(data)
         $.getJSON("/articles", function(data){
-            displayArticles(data)
+            showandhide(articles, saved)
+            articles.html('')
+            displayArticles(data);
         })
+        alert(data)
     })
 })
 
@@ -26,6 +33,8 @@ $("#articles").on("click", "#save-article", function(){
     var id = $(this).attr("data-id")
     $.post("/save/"+id)
     .done(function(data){
+        showandhide(articles, saved)
+        articles.html('')
         displayArticles(data);
     })
 })
@@ -35,29 +44,30 @@ $("#saved-articles").on("click", "#delete-article", function(){
     console.log(id, "delete")
     $.post("/delete/"+id)
         .done(function(data){
-            displaySavedArticles(data);
+            showandhide(saved, articles)
+            saved.html('')
+            //displaySavedArticles(data);
+            displayArticles(data);
         })
 })
 
 $("#saved").on("click", function(){
     $.getJSON("/saved", function(data){
-        $("#articles").attr("hidden",true)
-        $("#saved-articles").attr("hidden",false)
-        displaySavedArticles(data);
+        showandhide(saved, articles)
+        saved.html('')
+        //displaySavedArticles(data);
+        displayArticles(data);
     })
 })
 
 $("#home").on("click", function(){
-    $("#saved-articles").attr("hidden",true)
-    $("#articles").attr("hidden",false)
+    showandhide(articles, saved)
 })
 
 function displayArticles(data){
     console.log(data)
-    var articles = $("#articles")
-    articles.html('')
+    //articles.html('')
     data.map(function(item, i) {
-        if(!item.saved){
             var newArticle=$("<article>")
             var h2=$("<h2>")
             var h4 =$("<h4>")
@@ -67,6 +77,7 @@ function displayArticles(data){
             a.attr("href", item.link)
             h2.append(a)
             h4.text(item.excerpt)
+        if(!item.saved){            
             button.text("Save Article")
             button.attr("id", "save-article")
             button.addClass("save")
@@ -74,12 +85,21 @@ function displayArticles(data){
             newArticle.append(h2).append(h4).append(button)
             articles.append(newArticle)
         }
+        else{
+            button.text("Delete Article")
+            button.attr("id", "delete-article")
+            button.attr("data-id", item._id)
+            newArticle.append(h2).append(h4).append(button)
+            saved.append(newArticle)
+        }
     });
 }
 
 function displaySavedArticles(data){
     console.log("in saved art"+data)
+    var articles = $("#articles")
     var saved = $("#saved-articles")
+    showandhide(saved, articles)
     saved.html('')
     data.map(function(item, i) {
         if(item.saved){
