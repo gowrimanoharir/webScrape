@@ -1,0 +1,35 @@
+body, html{
+    min-height: 100%;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    /*background: transparent url('../images/burger.jpg') scroll 0 0 no-repeat;
+  background-size: cover;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000;*/
+}
+
+.jumbotron{
+    padding-top: 0px;
+    min-height: 700px;
+    background: transparent url('../images/background.jpg') scroll 0 0 no-repeat;
+    background-size: cover;
+    /*color: #fff;
+    color: #E2E8CE;*/
+}
+
+.jumbotron h1 {
+    font-size: 75px;
+    padding-top: 20px;
+    margin-top: 0px;
+}
+
+.jumbotron button {
+    margin: 15px;
+} 
+
+
+

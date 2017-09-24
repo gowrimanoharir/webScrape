@@ -92,5 +92,38 @@ module.exports = function(app, db){
         
     })
 
+    app.get('/notes/:id', function(req, res){
+        Article.find({ "_id": req.params.id })
+        .populate("note").exec(function(err, data){
+            if(err){
+                console.log(err)
+            }
+            else{
+                res.json(data)
+            }
+        })
+    })
+
+    app.post('/addNote/:id', function(req, res){
+        console.log("req", req)
+        var newNote = new Note(req.body)
+        console.log("newNote", newNote)
+        newNote.save(function(err, notedata){
+            if(err){
+                console.lof(err)
+            }
+            else{
+                Article.findOneAndUpdate({"_id": req.params.id}, {$push: {"note": notedata._id}}, {new: true}, function(err, articledata){
+                    if(err){
+                        console.log(err)
+                    }
+                    else{
+                        res.send(articledata)
+                    }
+                })
+            }
+        })
+    })
+
 }
 
