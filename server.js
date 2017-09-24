@@ -21,6 +21,7 @@ app.use(express.static("public"))
 
 var local_db = "mongodb://localhost/newsscrape"
 
+//check if HEROKU then use environment variable to connect to db else use local db
 if(process.env.MONGODB_URI){
     mongoose.connect(process.env.MONGODB_URI, function(err){
         if(err){

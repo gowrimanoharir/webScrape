@@ -1,6 +1,7 @@
 var articles = $("#articles")
 var saved = $("#saved-articles")
 
+//On page load get all articles not saved by user to display in the Home page
 $(document).ready(function(){
     $.getJSON("/articles", function(data){
         showandhide(articles, saved)
@@ -9,11 +10,14 @@ $(document).ready(function(){
     })
 })
 
+//Function to hide and show the desired sections
 function showandhide(div1, div2){
     div1.show()
     div2.hide()
 }
 
+
+//On click of scrape button call the Post route to scrape the articles from the website and then get articles to display the new articles if any
 $("#scrape").on("click", function(){
     $.post("/scrape")
     .done(function(data){
@@ -27,6 +31,7 @@ $("#scrape").on("click", function(){
     })
 })
 
+//On click of Saved Articles button call the Get route to get the articles from the database which are saved by the user
 $("#saved").on("click", function(){
     $.getJSON("/saved", function(data){
         showandhide(saved, articles)
@@ -35,10 +40,12 @@ $("#saved").on("click", function(){
     })
 })
 
+//On click of home button show the Articles section
 $("#home").on("click", function(){
     showandhide(articles, saved)
 })
 
+//On click of Save Article button call the post route to be able to save an article selected by user
 $("#articles").on("click", "#save-article", function(){
     var id = $(this).attr("data-id")
     $.post("/save/"+id)
@@ -49,6 +56,7 @@ $("#articles").on("click", "#save-article", function(){
     })
 })
 
+//On click of Delete Article button call the post route to be able to delete an article selected by user
 $("#saved-articles").on("click", "#delete-article", function(){
     var id = $(this).attr("data-id")
     $.post("/delete/"+id)
@@ -59,6 +67,7 @@ $("#saved-articles").on("click", "#delete-article", function(){
         })
 })
 
+//On click on Add Notes, call get route to get the notes of an article to display in add notes section
 $("#saved-articles").on("click", "#add-note", function(){
     $("#note-text").css("border-color", "rgb(169,169,169)")
     var id = $(this).attr("data-id")
@@ -71,6 +80,7 @@ $("#saved-articles").on("click", "#add-note", function(){
 
 })
 
+//On click of Save Note call the post route to save the notes of an article entered by user
 $("#save-note").on("click", function(){
     var id = $(this).attr("data-id")
     var notes = {
@@ -87,6 +97,7 @@ $("#save-note").on("click", function(){
     }  
 })
 
+//On click of Delete not call post route to delete the notes of an article selected by user   
 $("#notes-display").on("click", "#delete-note", function(){
     var id = $(this).attr("data-id")
     var aid = $(this).attr("data-aid")
@@ -97,7 +108,7 @@ $("#notes-display").on("click", "#delete-note", function(){
 })
 
 
-
+//function to display the data received from AJAX calls in Articles or Saved Articles section
 function displayArticles(data){
     data.map(function(item, i) {
             var newArticle=$("<article>")
@@ -142,6 +153,7 @@ function displayArticles(data){
     });
 }
 
+//function to display the data received from AJAX calls in Add Notes modal
 function displayNotes(data, id){
     var notesDisplay = $("#notes-display")
     $("#notes-display").html("")
