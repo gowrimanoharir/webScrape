@@ -15,10 +15,8 @@ function showandhide(div1, div2){
 }
 
 $("#scrape").on("click", function(){
-    console.log("in scrape")
     $.post("/scrape")
     .done(function(data){
-        console.log("in scrape",data)
         $.getJSON("/articles", function(data){
             showandhide(articles, saved)
             articles.html('')
@@ -33,7 +31,6 @@ $("#saved").on("click", function(){
     $.getJSON("/saved", function(data){
         showandhide(saved, articles)
         saved.html('')
-        //displaySavedArticles(data);
         displayArticles(data);
     })
 })
@@ -54,12 +51,10 @@ $("#articles").on("click", "#save-article", function(){
 
 $("#saved-articles").on("click", "#delete-article", function(){
     var id = $(this).attr("data-id")
-    console.log(id, "delete")
     $.post("/delete/"+id)
         .done(function(data){
             showandhide(saved, articles)
             saved.html('')
-            //displaySavedArticles(data);
             displayArticles(data);
         })
 })
@@ -70,7 +65,6 @@ $("#saved-articles").on("click", "#add-note", function(){
     $("#note-modal").modal("show")
     $("#save-note").attr("data-id", id)
     $.getJSON("/notes/"+id, function(data){
-        console.log("in get notes"+data)
         displayNotes(data, id)
        
     })
@@ -96,7 +90,6 @@ $("#save-note").on("click", function(){
 $("#notes-display").on("click", "#delete-note", function(){
     var id = $(this).attr("data-id")
     var aid = $(this).attr("data-aid")
-    console.log(id, "deleteNote")
     $.post("/deleteNote/"+id+"/"+aid)
         .done(function(data){
             displayNotes(data, aid);
@@ -106,8 +99,6 @@ $("#notes-display").on("click", "#delete-note", function(){
 
 
 function displayArticles(data){
-    console.log(data)
-    //articles.html('')
     data.map(function(item, i) {
             var newArticle=$("<article>")
             newArticle.addClass("panel panel-primary")
