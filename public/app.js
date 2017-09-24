@@ -69,12 +69,10 @@ $("#saved-articles").on("click", "#add-note", function(){
     $("#save-note").attr("data-id", id)
     $.getJSON("/notes/"+id, function(data){
         console.log("in get notes"+data)
-        if(data[0].note.length>1){
-            console.log("add note", data[0].note)
-            displayNotes(data[0].note)
-        }
-        
+        displayNotes(data, id)
+       
     })
+
 })
 
 $("#save-note").on("click", function(){
@@ -82,13 +80,25 @@ $("#save-note").on("click", function(){
     var notes = {
         comments: $("#note-text").val()
     }
-    $("#save-note").attr("data-id", "")
+    $("#save-note").removeAttr("data-id")
     $("#note-modal").modal("hide")
     $.post("/addNote/"+id, notes)
     .done(function(data){
         console.log(data)
     })    
 })
+
+$("#notes-display").on("click", "#delete-note", function(){
+    var id = $(this).attr("data-id")
+    var aid = $(this).attr("data-aid")
+    console.log(id, "deleteNote")
+    $.post("/deleteNote/"+id+"/"+aid)
+        .done(function(data){
+            displayNotes(data, aid);
+        })
+})
+
+
 
 function displayArticles(data){
     console.log(data)
@@ -126,12 +136,20 @@ function displayArticles(data){
     });
 }
 
-function displayNotes(data){
+function displayNotes(data, id){
     var notesDisplay = $("#notes-display")
+    $("#notes-display").html("")
     data.map(function(item, i){
         var note = $("<li>")
+        var del = $("<button>")
         note.addClass("list-group-item")
         note.text(item.comments)
+        del.addClass("btn btn-danger")
+        del.text("X")
+        del.attr("id", "delete-note")
+        del.attr("data-id", item._id)
+        del.attr("data-aid", id)
+        note.append(del)
         notesDisplay.append(note)
     })
 }

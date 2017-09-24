@@ -93,24 +93,25 @@ module.exports = function(app, db){
     })
 
     app.get('/notes/:id', function(req, res){
-        Article.find({ "_id": req.params.id })
+        Article.findOne({ "_id": req.params.id })
         .populate("note").exec(function(err, data){
             if(err){
                 console.log(err)
             }
             else{
-                res.json(data)
+                //console.log("get notes", data.note)
+                res.json(data.note)
             }
         })
     })
 
     app.post('/addNote/:id', function(req, res){
-        console.log("req", req)
+        console.log("req", req.params.id)
         var newNote = new Note(req.body)
         console.log("newNote", newNote)
         newNote.save(function(err, notedata){
             if(err){
-                console.lof(err)
+                console.log(err)
             }
             else{
                 Article.findOneAndUpdate({"_id": req.params.id}, {$push: {"note": notedata._id}}, {new: true}, function(err, articledata){
@@ -123,6 +124,19 @@ module.exports = function(app, db){
                 })
             }
         })
+    })
+
+    app.post('/deleteNote/:id/:aid', function(req,res){
+        Note.find({"_id":req.params.id}).remove(function(err, data){
+            if(err){
+                console.log(err)
+            }
+            else {
+                res.redirect("/notes/"+req.params.aid)
+            }
+            
+        })
+        
     })
 
 }
