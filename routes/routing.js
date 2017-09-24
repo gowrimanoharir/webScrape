@@ -33,10 +33,10 @@ module.exports = function(app, db){
                     if(articles===counter-1){
                         console.log("article", articles)
                         if(articles>0){
-                            res.send(articles + "articles added")
+                            res.send(articles + " New articles added")
                         }
                         else{
-                            res.send("no new article")
+                            res.send("No new articles added, checkback later")
                         }
                         
                     }    

@@ -5,20 +5,18 @@ body, html{
 body{
     margin: 0;
     padding: 0;
-    /*background: transparent url('../images/burger.jpg') scroll 0 0 no-repeat;
-  background-size: cover;
-  font-weight: bold;
-  font-size: 20px;
-  color: #000;*/
 }
 
 .jumbotron{
     padding-top: 0px;
-    min-height: 700px;
+    min-height: 200px;
     background: transparent url('../images/background.jpg') scroll 0 0 no-repeat;
     background-size: cover;
-    /*color: #fff;
-    color: #E2E8CE;*/
+    position: fixed;
+    top: 0px;
+    width: 100%;
+   /* color: #E2E8CE;*/
+    color: #F3EEE6;
 }
 
 .jumbotron h1 {
@@ -29,7 +27,98 @@ body{
 
 .jumbotron button {
     margin: 15px;
+    color: #F3EEE6;
+    background-color: #060606;
+    font-weight: bold;
 } 
+
+.jumbotron button:hover{
+    background-color: #F3EEE6;
+    color: #060606;
+}
+
+.jumbotron button:focus{
+    outline: 0;
+    background-color: #F3EEE6;
+    color: #060606;
+}
+
+
+.content{
+    margin-top: 260px;
+}
+
+.panel-primary{
+    border-color: #060606;
+}
+
+.panel-primary>.panel-heading {
+    color: #F3EEE6;
+    background-color: #060606;
+    
+}
+
+.panel-body{
+    /*background-color: #F8EDD9;*/
+    background-color: #F3EEE6;
+    color: #060606;
+
+}
+
+a{
+    text-decoration: none;
+    color: #F3EEE6;
+}
+
+a:hover{
+    color: #F3EEE6;
+}
+
+.panel-heading .btn{
+    float: right;
+    color: #060606;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.panel-heading .btn{
+    background-color: #F3EEE6;
+    color: #060606;
+}
+
+#articlesadded{
+    font-size: 30px;
+}
+
+#articlesadded .modal-header{
+    min-height: 100px;
+}
+
+.modal-content{
+    background-color: #F3EEE6;
+}
+
+#note-text{
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+#save-note{
+    margin-bottom: 10px;
+    color: #F3EEE6;
+    background-color: #060606;
+}
+
+.list-group-item .btn{
+    float: right;
+    line-height: 1;
+    padding: 4px 6px;
+}
+
+.list-group-item{
+    margin: 5px;
+}
+
 
 
 
